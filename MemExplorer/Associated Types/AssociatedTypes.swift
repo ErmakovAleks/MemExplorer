@@ -6,3 +6,6 @@
 //
 
 import Foundation
+
+typealias Completion<T> = (Result<T, Error>) -> ()
+typealias MemesCardsCompletion = Completion<[Meme]>

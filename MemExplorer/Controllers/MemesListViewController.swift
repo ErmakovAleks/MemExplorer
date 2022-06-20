@@ -15,11 +15,39 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
     typealias RootView = MemesListView
     
     // MARK: -
+    // MARK: Variables
+    
+    let provider: MemesDataProvider
+    
+    // MARK: -
+    // MARK: Initializators
+    
+    init(provider: MemesDataProvider) {
+        self.provider = provider
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: -
     // MARK: Public functions
     
     func prepareTableView() {
         self.rootView?.tableView?.dataSource = self
         self.rootView?.tableView?.delegate = self
+    }
+    
+    func memes() -> [Meme] {
+        self.provider.memesList { [weak self] results in
+            switch results {
+            case .success(let memes):
+                return memes
+            case .failure(_):
+                print("Incorect response from server!")
+            }
+        }
     }
     
     // MARK: -

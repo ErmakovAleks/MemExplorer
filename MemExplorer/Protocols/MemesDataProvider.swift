@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: -
 // MARK: Enums
@@ -34,12 +35,16 @@ enum Errors: Error {
 
 protocol MemesDataProvider {
     
-    func memesList() -> MemesCardsCompletion
+    var link: String { get }
+    
+    func memesList(handler: @escaping MemesCardsCompletion)
+    
+    func memeImage(url: URL, handler: @escaping ((UIImage?) -> Void))
 }
 
-extension PokemonsDataProvider {
+extension MemesDataProvider {
     
-    func pokemonImage(url: URL, handler: @escaping ((UIImage?) -> Void)) {
+    func memeImage(url: URL, handler: @escaping ((UIImage?) -> Void)) {
         DispatchQueue.global(qos: .background).async {
             var image: UIImage?
             if let data = try? Data(contentsOf: url) {
