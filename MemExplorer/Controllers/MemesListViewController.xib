@@ -17,9 +17,28 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT" customClass="MemesListView" customModule="MemExplorer" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="eeN-Qj-OCx">
+                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="jug-va-ixA"/>
+                        <outlet property="delegate" destination="-1" id="DXQ-MZ-ldf"/>
+                    </connections>
+                </tableView>
+            </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <point key="canvasLocation" x="139" y="114"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="eeN-Qj-OCx" secondAttribute="trailing" id="IA6-zL-uIW"/>
+                <constraint firstItem="eeN-Qj-OCx" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="IAB-uL-aeH"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="eeN-Qj-OCx" secondAttribute="bottom" id="mqd-xM-qfb"/>
+                <constraint firstItem="eeN-Qj-OCx" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="zfG-bu-sj0"/>
+            </constraints>
+            <connections>
+                <outlet property="tableView" destination="eeN-Qj-OCx" id="UiA-6R-Phx"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="113.83928571428571"/>
         </view>
     </objects>
     <resources>

@@ -17,7 +17,7 @@ protocol RootViewGettable: UIViewController {
 
 extension RootViewGettable {
     
-    var rootView: UIView? {
+    var rootView: RootView? {
         self.view as? RootView
     }
 }
