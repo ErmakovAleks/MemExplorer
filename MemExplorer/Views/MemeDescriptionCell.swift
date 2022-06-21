@@ -19,7 +19,7 @@ class MemeDescriptionCell: UITableViewCell {
     // MARK: Variables
     
     private var imageRequester = ImageRequester()
-    private var imageRequest: Cancellable?
+    private var imageRequest: URLSessionTask?
     
     // MARK: -
     // MARK: Functions

@@ -10,7 +10,7 @@ import UIKit
 
 public class ImageRequester {
     
-    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> Cancellable {
+    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             var image: UIImage?
             
