@@ -67,13 +67,12 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         
         self.rootView?.prepare()
         self.prepareTableView()
-        self.registerTableViewCells()
+        self.registerTableViewCell()
         self.memes()
     }
     
-    private func registerTableViewCells() {
-        let cell = UINib(nibName: "MemeDescriptionCell", bundle: nil)
-        self.rootView?.tableView?.register(cell, forCellReuseIdentifier: "memeDescriptionCell")
+    private func registerTableViewCell() {
+        self.rootView?.tableView?.registerCell(cellClass: MemeDescriptionCell.self)
     }
     
     // MARK: -
@@ -84,16 +83,27 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = self.rootView?.tableView?
-            .dequeueReusableCell(withIdentifier: "memeDescriptionCell") as? MemeDescriptionCell
-        {
-            cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
-            if let url = URL(string: self.memesArray[indexPath.row].url) {
-                cell.setImage(url: url)
+        guard let cell = self.rootView?.tableView?
+                .dequeueReusableCell(withCellClass: MemeDescriptionCell.self, for: indexPath) else {
+                    fatalError("Don't find identifire")
+                }
+        
+        cell.addSpinner()
+        cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
+        let url = URL(string: self.memesArray[indexPath.row].url)
+        cell.url = url
+        if let url = url {
+            self.provider.image(for: url) { image in
+                if url == cell.url && image != nil {
+                    cell.removeSpinner()
+                    let scaledImage = image?.scalePreservingAspectRatio(targetSize: 300)
+                    cell.setImage(image: scaledImage!)
+                }
             }
-            return cell
+        } else {
+            print("URL is incorrect!")
         }
-        return UITableViewCell()
+        return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

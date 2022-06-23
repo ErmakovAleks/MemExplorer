@@ -34,6 +34,27 @@ public class URLSessionMemesRequester: MemesDataProvider {
         }
     }
     
+    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask {
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            var image: UIImage?
+            
+            if let data = data {
+                image = UIImage(data: data)
+            }
+            
+            DispatchQueue.main.async {
+                handler(image)
+            }
+        }
+        
+        defer {
+            task.resume()
+        }
+        
+        return task
+    }
+    
+    
     // MARK: -
     // MARK: Private functions
     

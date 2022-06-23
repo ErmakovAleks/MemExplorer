@@ -18,22 +18,32 @@ class MemeDescriptionCell: UITableViewCell {
     // MARK: -
     // MARK: Variables
     
-    private var imageRequester = ImageRequester()
-    private var imageRequest: URLSessionTask?
+    private var spinner = UIActivityIndicatorView(style: .medium)
+    public var url: URL?
     
     // MARK: -
     // MARK: Functions
     
-    func setImage(url: URL) {
-        self.imageRequest = self.imageRequester.image(for: url) { [weak self] image in
-            self?.memeImage?.image = image
-        }
+    func setImage(image: UIImage) {
+        self.memeImage?.image = image
+    }
+    
+    func addSpinner() {
+        self.memeImage?.addSubview(self.spinner)
+        self.spinner.translatesAutoresizingMaskIntoConstraints = false
+        self.spinner.centerXAnchor.constraint(equalTo: self.memeImage!.centerXAnchor).isActive = true
+        self.spinner.centerYAnchor.constraint(equalTo: self.memeImage!.centerYAnchor).isActive = true
+        
+        self.spinner.startAnimating()
+    }
+    
+    func removeSpinner() {
+        self.spinner.removeFromSuperview()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+
         self.memeImage?.image = nil
-        self.imageRequest?.cancel()
     }
 }

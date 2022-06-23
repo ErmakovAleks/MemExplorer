@@ -39,18 +39,5 @@ protocol MemesDataProvider {
     
     func memesList(handler: @escaping MemesCardsCompletion)
     
-    func memeImage(url: URL, handler: @escaping ((UIImage?) -> Void))
-}
-
-extension MemesDataProvider {
-    
-    func memeImage(url: URL, handler: @escaping ((UIImage?) -> Void)) {
-        DispatchQueue.global(qos: .background).async {
-            var image: UIImage?
-            if let data = try? Data(contentsOf: url) {
-                image = UIImage(data: data)
-            }
-            handler(image)
-        }
-    }
+    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask
 }
