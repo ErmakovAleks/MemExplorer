@@ -24,7 +24,7 @@ class MemeDescriptionCell: UITableViewCell {
     // MARK: -
     // MARK: Functions
     
-    func setImage(image: UIImage) {
+    func setCell(image: UIImage) {
         self.memeImage?.image = image
     }
     

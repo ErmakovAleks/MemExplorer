@@ -14,7 +14,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        let provider = URLSessionMemesRequester()
+        let innerProvider = URLSessionMemesRequester()
+        let cache = CacheManager()
+        let provider = DataProvider(innerProvider: innerProvider, cache: cache)
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()

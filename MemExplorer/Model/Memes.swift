@@ -29,7 +29,7 @@ struct Meme: Codable {
     
     let id: String
     let name: String
-    let url: String
+    let url: URL
     let width: Int
     let height: Int
     let boxCount: Int

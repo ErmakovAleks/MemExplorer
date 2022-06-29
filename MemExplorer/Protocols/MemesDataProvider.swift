@@ -39,5 +39,6 @@ protocol MemesDataProvider {
     
     func memesList(handler: @escaping MemesCardsCompletion)
     
+    @discardableResult
     func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask
 }

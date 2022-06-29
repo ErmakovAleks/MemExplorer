@@ -90,18 +90,19 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         
         cell.addSpinner()
         cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
-        let url = URL(string: self.memesArray[indexPath.row].url)
+        let url = self.memesArray[indexPath.row].url
         cell.url = url
-        if let url = url {
-            self.provider.image(for: url) { image in
-                if url == cell.url && image != nil {
+        self.provider.image(for: url) { image in
+            if url == cell.url {
+                DispatchQueue.main.async {
                     cell.removeSpinner()
-                    let scaledImage = image?.scalePreservingAspectRatio(targetSize: 300)
-                    cell.setImage(image: scaledImage!)
+                    image?.scalePreservingAspectRatio(targetSize: 300, handler: { img in
+                        DispatchQueue.main.async {
+                            cell.setCell(image: img)
+                        }
+                    })
                 }
             }
-        } else {
-            print("URL is incorrect!")
         }
         return cell
     }
