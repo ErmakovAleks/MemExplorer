@@ -31,7 +31,7 @@ class DataProvider: MemesDataProvider {
     
     func image(for url: URL, resumed: Bool = true, handler: @escaping ImageCompletion) -> URLSessionTask? {
         var task: URLSessionTask?
-        self.cache.checkCache(url: url) { result in
+        self.cache.checkCache(url: url) { [weak self] result in
             switch result {
             case .success(let image):
                 handler(.success(image))
@@ -39,14 +39,14 @@ class DataProvider: MemesDataProvider {
                 let completion = { (result: Result<UIImage, Error>) in
                     switch result {
                     case .success(let image):
-                        self.cache.addToCacheFolder(image: image, url: url) {
+                        self?.cache.addToCacheFolder(image: image, url: url) {
                             handler(.success(image))
                         }
                     case .failure(let error):
                         print(error)
                     }
                 }
-                task = self.innerProvider.image(for: url, resumed: resumed, handler: completion)
+                task = self?.innerProvider.image(for: url, resumed: resumed, handler: completion)
             }
         }
         return task

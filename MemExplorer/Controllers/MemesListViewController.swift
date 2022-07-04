@@ -92,15 +92,15 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
         let url = self.memesArray[indexPath.row].url
         cell.url = url
-        self.provider.image(for: url, resumed: true) { result in
+        self.provider.image(for: url, resumed: true) { [weak cell] result in
             switch result {
             case .success(let image):
-                if url == cell.url {
+                if url == cell?.url {
                     DispatchQueue.main.async {
-                        cell.removeSpinner()
+                        cell?.removeSpinner()
                         image.scalePreservingAspectRatio(targetSize: 300, handler: { img in
                             DispatchQueue.main.async {
-                                cell.setCell(image: img)
+                                cell?.setCell(image: img)
                             }
                         })
                     }
