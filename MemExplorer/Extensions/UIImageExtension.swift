@@ -20,8 +20,6 @@ extension UIImage {
             height: size.height * scaleFactor
         )
         
-        print("New image width: \(scaledImageSize.width), height: \(scaledImageSize.height)")
-        
         DispatchQueue.global(qos: .background).async {
             let renderer = UIGraphicsImageRenderer(
                 size: scaledImageSize

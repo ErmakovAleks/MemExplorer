@@ -40,5 +40,7 @@ protocol MemesDataProvider {
     func memesList(handler: @escaping MemesCardsCompletion)
     
     @discardableResult
-    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask
+    /// In case of using a cached image, the function returns nil
+    /// - Returns: URLSessionTask for downloading image
+    func image(for url: URL, resumed: Bool, handler: @escaping ImageCompletion) -> URLSessionTask?
 }

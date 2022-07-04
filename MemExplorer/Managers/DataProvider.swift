@@ -29,57 +29,26 @@ class DataProvider: MemesDataProvider {
         self.innerProvider.memesList(handler: handler)
     }
     
-    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask {
-        if let image = self.cache.checkCache(url: url) {
-            print("Cached!")
-            handler(image)
-            
-            let task = URLSession.shared.dataTask(with: url) { data, response, error in
-                var image: UIImage?
-                
-                data.map { image = UIImage(data: $0) }
-                
-                DispatchQueue.main.async {
-                    handler(image)
+    func image(for url: URL, resumed: Bool = true, handler: @escaping ImageCompletion) -> URLSessionTask? {
+        var task: URLSessionTask?
+        self.cache.checkCache(url: url) { result in
+            switch result {
+            case .success(let image):
+                handler(.success(image))
+            case .failure(_):
+                let completion = { (result: Result<UIImage, Error>) in
+                    switch result {
+                    case .success(let image):
+                        self.cache.addToCacheFolder(image: image, url: url) {
+                            handler(.success(image))
+                        }
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
-            }
-            return task
-        } else {
-            DispatchQueue.global(qos: .background).async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    print("Downloaded!")
-                    self.cache.addToCacheFolder(image: image, url: url)
-                    handler(image)
-                } else { handler(nil) }
-            }
-            return self.innerProvider.image(for: url, handler: handler)
-        }
-    }
-    
-    /**
-    func list(limit: Int, offset: Int) -> Single<[Pokemon]> {
-            let pokemons = self.innerProvider.list(limit: limit, offset: offset)
-            return pokemons
-    }
-    
-    func details(url: URL) -> Single<PokemonDetails> {
-        let details = self.innerProvider.details(url: url)
-        return details
-    }
-    
-    func pokemonImage(url: URL, handler: @escaping ((UIImage?) -> Void)) {
-        if let image = self.cache.checkCache(url: url) {
-            print("Cached!")
-            handler(image)
-        } else {
-            DispatchQueue.global(qos: .background).async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    print("Downloaded!")
-                    self.cache.addToCacheFolder(image: image, url: url)
-                    handler(image)
-                } else { handler(nil) }
+                task = self.innerProvider.image(for: url, resumed: resumed, handler: completion)
             }
         }
+        return task
     }
-     */
 }

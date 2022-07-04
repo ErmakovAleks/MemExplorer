@@ -35,7 +35,7 @@ public class URLSessionMemesRequester: MemesDataProvider {
     }
     
     @discardableResult
-    func image(for url: URL, handler: @escaping (UIImage?) -> Void) -> URLSessionTask {
+    func image(for url: URL, resumed: Bool = true, handler: @escaping ImageCompletion) -> URLSessionTask? {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             var image: UIImage?
             
@@ -44,12 +44,14 @@ public class URLSessionMemesRequester: MemesDataProvider {
             }
             
             DispatchQueue.main.async {
-                handler(image)
+                image.map { handler(.success($0)) }
             }
         }
         
+        let taskCopy: URLSessionDataTask? = resumed ? task : nil
+
         defer {
-            task.resume()
+            taskCopy?.resume()
         }
         
         return task

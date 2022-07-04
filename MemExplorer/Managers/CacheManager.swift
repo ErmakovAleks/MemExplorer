@@ -46,33 +46,38 @@ class CacheManager: MemesCacheble {
     // MARK: -
     // MARK: Memes Cacheble Functions
     
-    func addToCacheFolder(image: UIImage, url: URL) {
+    func addToCacheFolder(image: UIImage, url: URL, handler: @escaping () -> Void) {
         if let percentURL = url.absoluteString
             .addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
            let pngImage = image.pngData(),
            let fileURL = self.cachedImagesFolderURL?
             .appendingPathComponent(percentURL)
         {
-            do {
-                try pngImage.write(to: fileURL)
-                print("Saved to cache")
-            } catch {
-                print(error.localizedDescription)
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    try pngImage.write(to: fileURL)
+                    handler()
+                } catch {
+                    print(error.localizedDescription)
+                    handler()
+                }
             }
         }
     }
     
-    func checkCache(url: URL) -> UIImage? {
-        if let dataURL = self.cachedImagesFolderURL?
-            .appendingPathComponent(url.absoluteString
-                                        .addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!),
-           let imageData = try? Data(contentsOf: dataURL)
-        {
-            let image = UIImage(data: imageData)
-            return image
-        } else {
-            print("Nothing found")
-            return nil
+    func checkCache(url: URL, handler: @escaping ImageCompletion) {
+        DispatchQueue.global(qos: .background).async {
+            let image = url
+                .absoluteString
+                .addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+                .flatMap { self.cachedImagesFolderURL?.appendingPathComponent($0) }
+                .flatMap { try? Data(contentsOf: $0) }
+                .flatMap { UIImage(data: $0) }
+            if let image = image {
+                handler(.success(image))
+            } else {
+                handler(.failure(Errors.notValidUrl))
+            }
         }
     }
 }
