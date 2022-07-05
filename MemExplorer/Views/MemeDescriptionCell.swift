@@ -20,6 +20,7 @@ class MemeDescriptionCell: UITableViewCell {
     
     private var spinner = UIActivityIndicatorView(style: .medium)
     public var url: URL?
+    public var onReuse: (() -> Void)?
     
     // MARK: -
     // MARK: Functions
@@ -43,7 +44,8 @@ class MemeDescriptionCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-
+        
+        self.onReuse?()
         self.memeImage?.image = nil
     }
 }

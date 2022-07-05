@@ -92,7 +92,8 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
         let url = self.memesArray[indexPath.row].url
         cell.url = url
-        self.provider.image(for: url, resumed: true) { [weak cell] result in
+        self.provider.image(for: url, resumed: true,
+                               handler: { [weak cell] result in
             switch result {
             case .success(let image):
                 if url == cell?.url {
@@ -108,7 +109,12 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
             case .failure(let error):
                 print(error)
             }
-        }
+        },
+                               taskHandler: { task in
+            cell.onReuse = {
+                task?.cancel()
+            }
+        })
         return cell
     }
     

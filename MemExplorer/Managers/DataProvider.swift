@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class DataProvider: MemesDataProvider {
+class DataProvider: MemesDataProvider {    
     
     // MARK: -
     // MARK: Variables
@@ -29,12 +29,17 @@ class DataProvider: MemesDataProvider {
         self.innerProvider.memesList(handler: handler)
     }
     
-    func image(for url: URL, resumed: Bool = true, handler: @escaping ImageCompletion) -> URLSessionTask? {
-        var task: URLSessionTask?
+    func image(
+        for url: URL,
+        resumed: Bool = true,
+        handler: @escaping ImageCompletion,
+        taskHandler: @escaping (URLSessionTask?) -> Void
+    ) {
         self.cache.checkCache(url: url) { [weak self] result in
             switch result {
             case .success(let image):
                 handler(.success(image))
+                taskHandler(nil)
             case .failure(_):
                 let completion = { (result: Result<UIImage, Error>) in
                     switch result {
@@ -46,9 +51,8 @@ class DataProvider: MemesDataProvider {
                         print(error)
                     }
                 }
-                task = self?.innerProvider.image(for: url, resumed: resumed, handler: completion)
+                self?.innerProvider.image(for: url, resumed: resumed, handler: completion, taskHandler: taskHandler)
             }
         }
-        return task
     }
 }

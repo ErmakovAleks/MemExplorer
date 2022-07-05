@@ -34,27 +34,32 @@ public class URLSessionMemesRequester: MemesDataProvider {
         }
     }
     
-    @discardableResult
-    func image(for url: URL, resumed: Bool = true, handler: @escaping ImageCompletion) -> URLSessionTask? {
+    func image(
+        for url: URL, resumed: Bool = true,
+        handler: @escaping ImageCompletion,
+        taskHandler: @escaping (URLSessionTask?) -> Void
+    ) {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            var image: UIImage?
-            
-            if let data = data {
-                image = UIImage(data: data)
-            }
             
             DispatchQueue.main.async {
-                image.map { handler(.success($0)) }
+                if let data = data, let image = UIImage(data: data) {
+                    handler(.success(image))
+                } else {
+                    if let error = error {
+                        handler(.failure(error))
+                    }
+                }
             }
         }
-        
         let taskCopy: URLSessionDataTask? = resumed ? task : nil
-
+        
         defer {
             taskCopy?.resume()
         }
         
-        return task
+        DispatchQueue.main.async {
+            taskHandler(task)
+        }
     }
     
     

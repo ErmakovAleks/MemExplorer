@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
-typealias Completion<T> = (Result<T, Error>) -> ()
-typealias ImageCompletion = Completion<UIImage>
-typealias MemesCardsCompletion = Completion<[Meme]>
+// MARK: -
+// MARK: Type Inferences
+
+typealias ImageCompletion = ResultCompletion<UIImage>
+
+typealias ResultCompletion<T> = (Result<T, Error>) -> ()
+
+

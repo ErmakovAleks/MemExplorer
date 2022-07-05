@@ -10,6 +10,9 @@ import UIKit
 
 protocol MemesCacheble {
     
+    // MARK: -
+    // MARK: Functions
+    
     func addToCacheFolder(image: UIImage, url: URL, handler: @escaping () -> Void)
     
     func checkCache(url: URL, handler: @escaping ImageCompletion)

@@ -35,12 +35,20 @@ enum Errors: Error {
 
 protocol MemesDataProvider {
     
+    // MARK: -
+    // MARK: Type Inferences
+    
+    typealias MemesCardsCompletion = ResultCompletion<[Meme]>
+    
+    // MARK: -
+    // MARK: Variables
+    
     var link: String { get }
+    
+    // MARK: -
+    // MARK: Functions
     
     func memesList(handler: @escaping MemesCardsCompletion)
     
-    @discardableResult
-    /// In case of using a cached image, the function returns nil
-    /// - Returns: URLSessionTask for downloading image
-    func image(for url: URL, resumed: Bool, handler: @escaping ImageCompletion) -> URLSessionTask?
+    func image(for url: URL, resumed: Bool, handler: @escaping ImageCompletion, taskHandler: @escaping (URLSessionTask?) -> Void)
 }
