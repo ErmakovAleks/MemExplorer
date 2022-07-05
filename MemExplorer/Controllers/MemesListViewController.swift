@@ -110,8 +110,8 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
                 print(error)
             }
         },
-                               taskHandler: { task in
-            cell.onReuse = {
+                               taskHandler: { [weak cell] task in
+            cell?.onReuse = {
                 task?.cancel()
             }
         })
