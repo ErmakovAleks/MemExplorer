@@ -75,6 +75,19 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         self.rootView?.tableView?.registerCell(cellClass: MemeDescriptionCell.self)
     }
     
+    private func configure(cell: MemeDescriptionCell?, with image: UIImage, and url: URL) {
+        if url == cell?.url {
+            DispatchQueue.main.async {
+                cell?.removeSpinner()
+                image.scalePreservingAspectRatio(targetSize: 300, handler: { img in
+                    DispatchQueue.main.async {
+                        cell?.setCell(image: img)
+                    }
+                })
+            }
+        }
+    }
+    
     // MARK: -
     // MARK: UITableViewDataSource, UITableViewDelegate
     
@@ -83,38 +96,27 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = self.rootView?.tableView?
-                .dequeueReusableCell(withCellClass: MemeDescriptionCell.self, for: indexPath) else {
-                    fatalError("Don't find identifire")
-                }
-        
+        let cell = tableView.dequeueReusableCell(withCellClass: MemeDescriptionCell.self, for: indexPath)       
         cell.addSpinner()
         cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
         let url = self.memesArray[indexPath.row].url
         cell.url = url
-        self.provider.image(for: url, resumed: true,
-                               handler: { [weak cell] result in
-            switch result {
-            case .success(let image):
-                if url == cell?.url {
-                    DispatchQueue.main.async {
-                        cell?.removeSpinner()
-                        image.scalePreservingAspectRatio(targetSize: 300, handler: { img in
-                            DispatchQueue.main.async {
-                                cell?.setCell(image: img)
-                            }
-                        })
-                    }
+        self.provider.image(
+            for: url,
+            resumed: true,
+            handler: { [weak cell] result in
+                switch result {
+                case .success(let image):
+                    self.configure(cell: cell, with: image, and: url)
+                case .failure(let error):
+                    print(error)
                 }
-            case .failure(let error):
-                print(error)
-            }
-        },
-                               taskHandler: { [weak cell] task in
-            cell?.onReuse = {
-                task?.cancel()
-            }
-        })
+            },
+            taskHandler: { [weak cell] task in
+                cell?.onReuse = {
+                    task?.cancel()
+                }
+            })
         return cell
     }
     

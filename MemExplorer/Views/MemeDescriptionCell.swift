@@ -20,7 +20,7 @@ class MemeDescriptionCell: UITableViewCell {
     
     private var spinner = UIActivityIndicatorView(style: .medium)
     public var url: URL?
-    public var onReuse: (() -> Void)?
+    public var onReuse: F.VoidCompletion?
     
     // MARK: -
     // MARK: Functions
@@ -32,9 +32,10 @@ class MemeDescriptionCell: UITableViewCell {
     func addSpinner() {
         self.memeImage?.addSubview(self.spinner)
         self.spinner.translatesAutoresizingMaskIntoConstraints = false
-        self.spinner.centerXAnchor.constraint(equalTo: self.memeImage!.centerXAnchor).isActive = true
-        self.spinner.centerYAnchor.constraint(equalTo: self.memeImage!.centerYAnchor).isActive = true
-        
+        if let memeImage = memeImage {
+            self.spinner.centerXAnchor.constraint(equalTo: memeImage.centerXAnchor).isActive = true
+            self.spinner.centerYAnchor.constraint(equalTo: memeImage.centerYAnchor).isActive = true
+        }
         self.spinner.startAnimating()
     }
     

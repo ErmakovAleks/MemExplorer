@@ -8,11 +8,17 @@
 import Foundation
 import UIKit
 
+enum F {
+    
+    typealias VoidCompletion = () -> Void
+}
+
 // MARK: -
 // MARK: Type Inferences
 
 typealias ImageCompletion = ResultCompletion<UIImage>
 
 typealias ResultCompletion<T> = (Result<T, Error>) -> ()
+
 
 

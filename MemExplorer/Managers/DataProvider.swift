@@ -14,10 +14,10 @@ class DataProvider: MemesDataProvider {
     // MARK: Variables
     
     var link: String = MemesAPI.environment()
-    var innerProvider: MemesDataProvider
+    var innerProvider: ImageTaskGettable
     var cache: MemesCacheble
     
-    init(innerProvider: MemesDataProvider, cache: MemesCacheble) {
+    init(innerProvider: ImageTaskGettable, cache: MemesCacheble) {
         self.innerProvider = innerProvider
         self.cache = cache
     }
@@ -33,13 +33,13 @@ class DataProvider: MemesDataProvider {
         for url: URL,
         resumed: Bool = true,
         handler: @escaping ImageCompletion,
-        taskHandler: @escaping (URLSessionTask?) -> Void
+        taskHandler: @escaping TaskCompletion
     ) {
         self.cache.checkCache(url: url) { [weak self] result in
             switch result {
             case .success(let image):
-                handler(.success(image))
                 taskHandler(nil)
+                handler(.success(image))
             case .failure(_):
                 let completion = { (result: Result<UIImage, Error>) in
                     switch result {
@@ -48,10 +48,11 @@ class DataProvider: MemesDataProvider {
                             handler(.success(image))
                         }
                     case .failure(let error):
-                        print(error)
+                        handler(.failure(error))
                     }
                 }
-                self?.innerProvider.image(for: url, resumed: resumed, handler: completion, taskHandler: taskHandler)
+                let task = self?.innerProvider.imageTask(for: url, handler: completion)
+                taskHandler(task)
             }
         }
     }
