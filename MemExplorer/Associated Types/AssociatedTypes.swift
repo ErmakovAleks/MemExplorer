@@ -20,5 +20,7 @@ typealias ImageCompletion = ResultCompletion<UIImage>
 
 typealias ResultCompletion<T> = (Result<T, Error>) -> ()
 
+typealias TaskCompletion = (URLSessionDataTask?) -> Void
+
 
 

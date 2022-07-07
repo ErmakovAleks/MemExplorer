@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class URLSessionMemesRequester: ImageTaskGettable {
+public class URLSessionMemesRequester: MemesDataProvidable, ImageTaskGettable {
     
     // MARK: -
     // MARK: Variables
@@ -34,24 +34,7 @@ public class URLSessionMemesRequester: ImageTaskGettable {
         }
     }
     
-    func image(
-        for url: URL, resumed: Bool = true,
-        handler: @escaping ImageCompletion,
-        taskHandler: @escaping TaskCompletion
-    ) {
-        let task = self.imageTask(for: url, handler: handler)
-        let taskCopy: URLSessionDataTask? = resumed ? task : nil
-        
-        defer {
-            taskCopy?.resume()
-        }
-        
-        DispatchQueue.main.async {
-            taskHandler(task)
-        }
-    }
-    
-    func imageTask(for url: URL, handler: @escaping ImageCompletion) -> URLSessionDataTask? {
+    func imageTask(for url: URL, handler: @escaping ImageCompletion) -> URLSessionDataTask {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             
             DispatchQueue.main.async {

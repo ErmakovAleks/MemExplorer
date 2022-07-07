@@ -16,12 +16,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let innerProvider = URLSessionMemesRequester()
         let cache = CacheManager()
-        let provider = DataProvider(innerProvider: innerProvider, cache: cache)
+        let dataManager = DataManager(innerProvider: innerProvider, cache: cache)
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         window?.backgroundColor = .systemBackground
-        window?.rootViewController = MemesListViewController(provider: provider)
+        window?.rootViewController = MemesListViewController(provider: dataManager)
         
         return true
     }

@@ -17,14 +17,14 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
     // MARK: -
     // MARK: Variables
     
-    let provider: MemesDataProvider
+    let provider: MemesDataProvidable & ImageTaskHandlerGettable
     private var memesArray = [Meme]()
     private var imagesArray = [UIImage]()
     
     // MARK: -
     // MARK: Initializators
     
-    init(provider: MemesDataProvider) {
+    init(provider: MemesDataProvidable & ImageTaskHandlerGettable) {
         self.provider = provider
         super.init(nibName: nil, bundle: nil)
     }

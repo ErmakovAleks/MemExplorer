@@ -33,13 +33,12 @@ enum Errors: Error {
 // MARK: -
 // MARK: Provider Requirements Protocol
 
-protocol MemesDataProvider {
+protocol MemesDataProvidable {
     
     // MARK: -
     // MARK: Type Inferences
     
     typealias MemesCardsCompletion = ResultCompletion<[Meme]>
-    typealias TaskCompletion = (URLSessionDataTask?) -> Void
     
     // MARK: -
     // MARK: Variables
@@ -50,6 +49,4 @@ protocol MemesDataProvider {
     // MARK: Functions
     
     func memesList(handler: @escaping MemesCardsCompletion)
-    
-    func image(for url: URL, resumed: Bool, handler: @escaping ImageCompletion, taskHandler: @escaping TaskCompletion)
 }

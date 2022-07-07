@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 
-class DataProvider: MemesDataProvider {    
+class DataManager: MemesDataProvidable, ImageTaskHandlerGettable {
     
     // MARK: -
     // MARK: Variables
     
     var link: String = MemesAPI.environment()
-    var innerProvider: ImageTaskGettable
+    var innerProvider: MemesDataProvidable & ImageTaskGettable
     var cache: MemesCacheble
     
-    init(innerProvider: ImageTaskGettable, cache: MemesCacheble) {
+    init(innerProvider: MemesDataProvidable & ImageTaskGettable, cache: MemesCacheble) {
         self.innerProvider = innerProvider
         self.cache = cache
     }

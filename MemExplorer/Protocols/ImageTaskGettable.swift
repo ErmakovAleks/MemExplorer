@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol ImageTaskGettable: MemesDataProvider {
+protocol ImageTaskGettable {
     
-    func imageTask(for url: URL, handler: @escaping ImageCompletion) -> URLSessionDataTask?
+    func imageTask(for url: URL, handler: @escaping ImageCompletion) -> URLSessionDataTask
 }
