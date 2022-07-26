@@ -11,6 +11,7 @@ import UIKit
 enum F {
     
     typealias VoidCompletion = () -> Void
+    typealias CellCompletion = (UITableViewCell) -> Void
 }
 
 // MARK: -

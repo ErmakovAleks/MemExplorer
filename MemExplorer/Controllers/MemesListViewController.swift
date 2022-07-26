@@ -45,14 +45,14 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         self.provider.memesList { [weak self] results in
             switch results {
             case .success(let memes):
-                self?.refreshData(memes: memes)
+                self?.refresh(memes: memes)
             case .failure(_):
                 print("Incorect response from server!")
             }
         }
     }
     
-    func refreshData(memes: [Meme]) {
+    func refresh(memes: [Meme]) {
         DispatchQueue.main.async {
             self.memesArray += memes
             self.rootView?.tableView?.reloadData()
@@ -84,8 +84,42 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
                         cell?.setCell(image: img)
                     }
                 })
+                
+                cell?.processStar = { [weak self] cell in
+                    guard
+                        let cell = cell as? MemeDescriptionCell,
+                        let indexPath = self?.rootView?.tableView?.indexPath(for: cell)
+                    else { return }
+                    self?.mark(by: indexPath)
+                }
             }
         }
+    }
+    
+    private func mark(by indexPath: IndexPath) {
+        self.inverseIsFavorite(by: indexPath)
+        self.reorderList()
+        //self.rootView?.tableView?.reloadRows(at: [indexPath], with: .automatic)
+        //self.rootView?.tableView?.reloadData()
+        self.reload(tableView: self.rootView?.tableView)
+    }
+    
+    private func inverseIsFavorite(by indexPath: IndexPath) {
+        self.memesArray[indexPath.row].isFavorite = !self.memesArray[indexPath.row].isFavorite
+    }
+    
+    private func reorderList() {
+        let favorites = self.memesArray.filter { $0.isFavorite }
+        let unFavorites = self.memesArray.filter { !$0.isFavorite }
+        self.memesArray = favorites + unFavorites
+    }
+    
+    private func reload(tableView: UITableView?) {
+        guard var contentOffset = tableView?.contentOffset else { return }
+        contentOffset.y += 150
+        tableView?.reloadData()
+        tableView?.layoutIfNeeded()
+        tableView?.setContentOffset(contentOffset, animated: false)
     }
     
     // MARK: -
@@ -99,6 +133,8 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
         let cell = tableView.dequeueReusableCell(withCellClass: MemeDescriptionCell.self, for: indexPath)       
         cell.addSpinner()
         cell.memeDescriptionLabel?.text = self.memesArray[indexPath.row].name
+        cell.isFavorite = self.memesArray[indexPath.row].isFavorite
+        
         let url = self.memesArray[indexPath.row].url
         cell.url = url
         self.provider.image(

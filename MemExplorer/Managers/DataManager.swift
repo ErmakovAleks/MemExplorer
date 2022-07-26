@@ -52,6 +52,9 @@ class DataManager: MemesDataProvidable, ImageTaskHandlerGettable {
                     }
                 }
                 let task = self?.innerProvider.imageTask(for: url, handler: completion)
+                if resumed {
+                    task?.resume()
+                }
                 taskHandler(task)
             }
         }

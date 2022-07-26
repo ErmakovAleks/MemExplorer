@@ -33,4 +33,5 @@ struct Meme: Codable {
     let width: Int
     let height: Int
     let boxCount: Int
+    var isFavorite: Bool = false
 }

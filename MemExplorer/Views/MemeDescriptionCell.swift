@@ -10,10 +10,18 @@ import UIKit
 class MemeDescriptionCell: UITableViewCell {
     
     // MARK: -
+    // MARK: IBActions
+    
+    @IBAction func addToFavoritesButton(_ sender: Any) {
+        self.processStar?(self)
+    }
+    
+    // MARK: -
     // MARK: IBOutlets
     
     @IBOutlet var memeImage: UIImageView?
     @IBOutlet var memeDescriptionLabel: UILabel?
+    @IBOutlet var favoriteImage: UIImageView?
     
     // MARK: -
     // MARK: Variables
@@ -21,12 +29,19 @@ class MemeDescriptionCell: UITableViewCell {
     private var spinner = UIActivityIndicatorView(style: .medium)
     public var url: URL?
     public var onReuse: F.VoidCompletion?
+    public var processStar: F.CellCompletion?
+    public var isFavorite: Bool = false
     
     // MARK: -
     // MARK: Functions
     
     func setCell(image: UIImage) {
         self.memeImage?.image = image
+        if self.isFavorite {
+            self.favoriteImage?.image = UIImage(systemName: "star.fill")
+        } else {
+            self.favoriteImage?.image = UIImage(systemName: "star")
+        }
     }
     
     func addSpinner() {
