@@ -99,8 +99,6 @@ class MemesListViewController: UIViewController, RootViewGettable, UITableViewDe
     private func mark(by indexPath: IndexPath) {
         self.inverseIsFavorite(by: indexPath)
         self.reorderList()
-        //self.rootView?.tableView?.reloadRows(at: [indexPath], with: .automatic)
-        //self.rootView?.tableView?.reloadData()
         self.reload(tableView: self.rootView?.tableView)
     }
     
